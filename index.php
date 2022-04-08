@@ -26,16 +26,40 @@
         $(document).ready(function(){ 
             //fill data to tree  with AJAX call
             $('#jsTree').jstree({
-            'plugins': ["wholerow", "dnd", "contextmenu"],
                 'core' : {
                     'data' : {
-                        "check_callback": true,
-                        "url" : "conf.php",
-                        "plugins" : [ "wholerow", "checkbox" ],
-                        "dataType" : "json" // needed only if you do not supply JSON headers
-                    }
+                    'url' : 'conf.php',
+                    'data' : function (node) {
+                        return { 'id' : node.id };
+                    },
+                "dataType" : "json"
+                    },
+                    'check_callback' : true,
+                    'themes' : {
+                    'responsive' : false
                 }
-            }) 
+            },
+            'plugins' : ['state','contextmenu','wholerow']
+            }).on('create_node.jstree', function (e, data) {
+                    
+                $.get('conf.php', { 'id' : data.node.parent, 'position' : data.position, 'text' : data.node.text })
+                    .done(function (d) {
+                    data.instance.set_id(data.node, d.id);
+                    })
+                    .fail(function () {
+                    data.instance.refresh();
+                    });
+                }).on('rename_node.jstree', function (e, data) {
+                $.get('conf.php', { 'id' : data.node.id, 'text' : data.text })
+                    .fail(function () {
+                    data.instance.refresh();
+                    });
+                }).on('delete_node.jstree', function (e, data) {
+                $.get('conf.php', { 'id' : data.node.id })
+                    .fail(function () {
+                    data.instance.refresh();
+                    });
+                });
         });
     </script>
 </body>
