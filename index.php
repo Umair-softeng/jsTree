@@ -39,7 +39,39 @@
                     'responsive' : false
                 }
             },
-            'plugins' : ['state','contextmenu','wholerow']
+            'contextmenu' : {
+						'items' : function(node) {
+							var tmp = $.jstree.defaults.contextmenu.items();
+							delete tmp.create.action;
+							tmp.create.label = "New";
+							tmp.create.submenu = {
+								"create_folder" : {
+									"separator_after"	: true,
+									"label"				: "Folder",
+									"action"			: function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "default" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								},
+								"create_file" : {
+									"label"				: "File",
+									"action"			: function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "file" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								}
+							};
+						
+							return tmp;
+						}
+					},
+            'plugins' : ['dnd', 'contextmenu','wholerow']
             }).on('create_node.jstree', function (e, data) {
                     
                 $.get('conf.php', { 'id' : data.node.parent, 'position' : data.position, 'text' : data.node.text })
