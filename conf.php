@@ -24,6 +24,7 @@
        $itemsByReference[$item['id']] = &$item;
        // Children array:
        $itemsByReference[$item['id']]['children'] = array();
+       $itemsByReference[$item['id']]['text'] = $itemsByReference[$item['id']]['folder'];
        // Empty data class (so that json_encode adds "data: {}" ) 
        $itemsByReference[$item['id']]['data'] = new StdClass();
     }
