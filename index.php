@@ -62,7 +62,7 @@
 				.jstree({
 					'core' : {
 						'data' : {
-							'url' : 'conf.php',
+							'url' : 'conf.php?operation=get_node',
 							'data' : function (node) {
 								return { 'id' : node.id };
 							},
@@ -130,13 +130,13 @@
 					'plugins' : ['state','dnd','sort','types','contextmenu','unique']
 				})
 				.on('delete_node.jstree', function (e, data) {
-					$.get('conf.php', { 'id' : data.node.id })
+					$.get('conf.php?operation=delete_node', { 'id' : data.node.id })
 						.fail(function () {
 							data.instance.refresh();
 						});
 				})
 				.on('create_node.jstree', function (e, data) {
-					$.get('conf.php', { 'type' : data.node.type, 'id' : data.node.parent, 'text' : data.node.text })
+					$.get('conf.php?operation=create_node', { 'type' : data.node.type, 'id' : data.node.parent, 'name' : data.node.text })
 						.done(function (d) {
 							data.instance.set_id(data.node, d.id);
 						})
@@ -145,7 +145,7 @@
 						});
 				})
 				.on('rename_node.jstree', function (e, data) {
-					$.get('conf.php', { 'id' : data.node.id, 'text' : data.text })
+					$.get('conf.php?operation=rename_node', { 'id' : data.node.id, 'name' : data.text })
 						.done(function (d) {
 							data.instance.set_id(data.node, d.id);
 						})
@@ -154,7 +154,7 @@
 						});
 				})
 				.on('move_node.jstree', function (e, data) {
-					$.get('conf.php', { 'id' : data.node.id, 'parent' : data.parent })
+					$.get('conf.php?operation=move_node', { 'id' : data.node.id, 'parent' : data.parent })
 						.done(function (d) {
 							//data.instance.load_node(data.parent);
 							data.instance.refresh();
@@ -164,7 +164,7 @@
 						});
 				})
 				.on('copy_node.jstree', function (e, data) {
-					$.get('conf.php', { 'id' : data.original.id, 'parent' : data.parent })
+					$.get('conf.php?operation=copy_node', { 'id' : data.original.id, 'parent' : data.parent })
 						.done(function (d) {
 							//data.instance.load_node(data.parent);
 							data.instance.refresh();
@@ -210,7 +210,7 @@
 					}
 					else {
 						$('#data .content').hide();
-						$('#data .default').html('Select a file from the tree.').show();
+						
 					}
 				});
 		});
